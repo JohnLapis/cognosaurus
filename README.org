@@ -1,0 +1,3 @@
+* cognate-saurus
+
+This project is an API that, given a word, returns cognates or similar words in as many languages as posssible.
