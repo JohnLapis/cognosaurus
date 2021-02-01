@@ -1,24 +1,37 @@
+from functools import reduce
+from itertools import starmap
+
+import iso639
+from iso639.exceptions import InvalidLanguageValue
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from cognosaurus.api.serializers import CognateSerializer
 
-LANGUAGES = ["en", "int", "jp", "pt-br", "ru"]
-
 
 class CognateViewSet(ViewSet):
-    def get_queryset(self, word, lang):
-        return [{"cognate": word, "language": lang}]
-
     def list(self, request):
-        results = {}
-        for lang, words in request.query_params.lists():
-            for word in words:
-                if lang not in LANGUAGES and False:
-                    continue
-                queryset = self.get_queryset(word, lang)
-                serializer = CognateSerializer(data=queryset, many=True)
-                assert serializer.is_valid()
-                results[word] = serializer.data
+        def get_data(*args):
+            return self.get_data(*args)
 
-        return Response({"results": results})
+        data = starmap(get_data, request.query_params.lists())
+        data = filter(None, data)
+        data = reduce(lambda a, b: {**a, **b}, data, {})
+        return Response({"results": data})
+
+    def get_data(self, lang, words):
+        try:
+            lang = iso639.Lang(lang)
+        except InvalidLanguageValue:
+            return None
+
+        return {word: self.get_cognates(lang.name, word) for word in words}
+
+    def get_cognates(self, lang, word):
+        queryset = self.get_queryset(lang, word)
+        serializer = CognateSerializer(data=queryset, many=True)
+        assert serializer.is_valid()
+        return serializer.data
+
+    def get_queryset(self, lang, word):
+        return [{"cognate": word, "language": lang}]
