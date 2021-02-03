@@ -11,6 +11,8 @@ from cognosaurus.api.serializers import CognateSerializer
 
 
 class CognateViewSet(ViewSet):
+    """Returns cognates for every word in the url query."""
+
     def list(self, request):
         def get_data(*args):
             return self.get_data(*args)
