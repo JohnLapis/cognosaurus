@@ -17,6 +17,7 @@ django = "*"
 djangorestframework = "*"
 iso639-lang = "*"
 requests = "*"
+redis = "*"
 
 [requires]
 python_version = "3.6"
