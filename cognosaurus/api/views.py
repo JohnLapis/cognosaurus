@@ -13,6 +13,8 @@ from cognosaurus.api.serializers import CognateSerializer
 class CognateViewSet(ViewSet):
     """Returns cognates for every word in the url query."""
 
+    serializer_class = CognateSerializer
+
     def list(self, request):
         def get_data(*args):
             return self.get_data(*args)
@@ -33,10 +35,12 @@ class CognateViewSet(ViewSet):
     def get_cognates(self, lang, word):
         cognates = []
         for cognate in get_cognates(lang, word):
-            serializer = CognateSerializer(data={
-                "word": cognate["word"],
-                "language": iso639.Lang(cognate["lang"]).name,
-            })
+            serializer = self.serializer_class(
+                data={
+                    "word": cognate["word"],
+                    "language": iso639.Lang(cognate["lang"]).name,
+                }
+            )
             assert serializer.is_valid()
             cognates.append(serializer.data)
 
