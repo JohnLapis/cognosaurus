@@ -48,6 +48,9 @@ DATABASES = {
     }
 }
 
+REDIS_HOST = "0.0.0.0"
+REDIS_PORT = "3000"
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"

@@ -1,9 +1,13 @@
+import redis
+import json
+
 from django.db import models
+from django.conf import settings
 
 
-class Cognate(models.Model):
-    concept_id = models.CharField(max_length=9, null=True)
-    lang_1 = models.CharField(max_length=3)
-    lang_2 = models.CharField(max_length=3)
-    word_1 = models.CharField(max_length=80)
-    word_2 = models.CharField(max_length=80)
+DB = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
+
+def get_cognates(lang, word):
+    for cognate in DB.lrange(f"cognate:{lang}:{word}", 0, -1):
+        yield json.loads(cognate)

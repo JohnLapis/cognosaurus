@@ -6,14 +6,11 @@ from iso639.exceptions import InvalidLanguageValue
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from cognosaurus.api.models import get_cognates
 from cognosaurus.api.serializers import CognateSerializer
-from cognosaurus.api.models import Cognate
-from django.db.models import Q
 
 
 class CognateViewSet(ViewSet):
-    queryset = Cognate.objects.all()
-
     def list(self, request):
         def get_data(*args):
             return self.get_data(*args)
@@ -32,20 +29,13 @@ class CognateViewSet(ViewSet):
         return {word: self.get_cognates(lang_code, word) for word in words}
 
     def get_cognates(self, lang, word):
-        results = self.queryset.filter(
-            Q(word_1__eq=word, lang_1__eq=lang) | word_2__eq=word, lang_2__eq=lang
-        ).values("word_1", "lang_1", "word_2", "lang_2")
-
-        data = []
-        for result in results:
-            column_suffix = "2" if lang == result.lang_1 else "1"
-            cognate = getattr(result, f"word_{column_suffix}")
-            cognate_lang = getattr(result, f"lang_{column_suffix}")
-            data.append({
-                "cognate": cognate,
-                "language": iso639.Lang(cognate_lang).name
+        cognates = []
+        for cognate in get_cognates(lang, word):
+            serializer = CognateSerializer(data={
+                "word": cognate["word"],
+                "language": iso639.Lang(cognate["lang"]).name,
             })
+            assert serializer.is_valid()
+            cognates.append(serializer.data)
 
-        serializer = CognateSerializer(data=data, many=True)
-        assert serializer.is_valid()
-        return serializer.data
+        return cognates
