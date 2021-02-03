@@ -30,7 +30,11 @@ class CognateViewSet(ViewSet):
         except InvalidLanguageValue:
             return None
 
-        return {word: self.get_cognates(lang_code, word) for word in words}
+        data = {}
+        for word in words:
+            data[f"{lang_code}:{word}"] = self.get_cognates(lang_code, word)
+
+        return data
 
     def get_cognates(self, lang, word):
         cognates = []
