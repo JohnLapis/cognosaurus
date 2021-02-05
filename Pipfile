@@ -18,6 +18,7 @@ djangorestframework = "*"
 iso639-lang = "*"
 requests = "*"
 redis = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.6"
