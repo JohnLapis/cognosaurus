@@ -33,8 +33,12 @@ def get_equal_cognates(lang, word):
 
 
 def get_any_cognates_for_all_languages(word):
+    cognate_hashes = set()
     for key in DB.keys(f"cognate:*:{word}"):
         for cognate in DB.lrange(key, 0, -1):
+            if hash(cognate) in cognate_hashes:
+                continue
+            cognate_hashes.add(hash(cognate))
             yield json.loads(cognate)
 
 
@@ -44,8 +48,13 @@ def get_any_cognates_for_one_language(lang, word):
 
 
 def get_equal_cognates_for_all_languages(word):
+    cognate_hashes = set()
     for key in DB.keys(f"cognate:*:{word}"):
         for cognate in DB.lrange(key, 0, -1):
+            if hash(cognate) in cognate_hashes:
+                continue
+
+            cognate_hashes.add(hash(cognate))
             cognate = json.loads(cognate)
             if cognate["word"] == word:
                 yield cognate
