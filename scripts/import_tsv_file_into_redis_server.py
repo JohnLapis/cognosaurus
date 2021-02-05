@@ -1,11 +1,12 @@
 import argparse
 import json
+import os
 
 import redis
 
 
-def get_db(host, port):
-    return redis.Redis(host=host, port=port, db=0)
+def get_db():
+    return redis.Redis(host="0.0.0.0", port=os.environ["REDIS_PORT"], db=0)
 
 
 def read_file(name):
@@ -28,7 +29,7 @@ def validate_columns(columns):
     return columns == fields
 
 
-def main(file, db_host="localhost", db_port=6379):
+def main(file):
     rows = read_file(file)
     assert validate_columns(next(rows))
 
@@ -39,7 +40,7 @@ def main(file, db_host="localhost", db_port=6379):
         "word_2",
     ]
 
-    db = get_db(db_host, db_port)
+    db = get_db()
     assert db.ping()
 
     row_hashes = set()
@@ -81,11 +82,5 @@ if __name__ == "__main__":
         description="Creates database with data from tsv file."
     )
     parser.add_argument("file", type=str, help="tsv file.")
-    parser.add_argument(
-        "--host", type=str, help="Host to use to connect to database."
-    )
-    parser.add_argument(
-        "--port", type=int, help="Port to use to connect to database."
-    )
     args = parser.parse_args()
-    main(args.file, args.host, args.port)
+    main(args.file)

@@ -53,8 +53,8 @@ DATABASES = {
     }
 }
 
-REDIS_HOST = "0.0.0.0"
-REDIS_PORT = "3000"
+REDIS_HOST = os.environ["REDIS_HOST"]
+REDIS_PORT = os.environ["REDIS_PORT"]
 
 LANGUAGE_CODE = "en-us"
 
