@@ -6,7 +6,12 @@ from django.conf import settings
 DB = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
+def is_word_valid(word):
+    return not any([c in word for c in "$^[]*"])
+
+
 def get_cognates(lang, word, *, comparison):
+    assert is_word_valid(word)
     if comparison == "equal":
         return get_equal_cognates(lang, word)
     else:

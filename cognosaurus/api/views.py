@@ -6,7 +6,7 @@ from iso639.exceptions import InvalidLanguageValue
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from cognosaurus.api.models import get_cognates
+from cognosaurus.api.models import get_cognates, is_word_valid
 from cognosaurus.api.serializers import CognateSerializer
 
 
@@ -43,6 +43,8 @@ class CognateViewSet(ViewSet):
 
     def get_cognates(self, lang, word, **params):
         cognates = []
+        if not is_word_valid(word):
+            return None
         for cognate in get_cognates(lang, word, **params):
             serializer = self.serializer_class(
                 data={
