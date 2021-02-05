@@ -2,7 +2,6 @@ import json
 
 import redis
 from django.conf import settings
-from django.db import models
 
 DB = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
