@@ -16,10 +16,12 @@ class CognateViewSet(ViewSet):
     serializer_class = CognateSerializer
 
     def list(self, request):
-        comparison = request.query_params.get("comparison")
+        params = {
+            "comparison": request.query_params.get("comparison"),
+        }
 
         def get_data(*args):
-            return self.get_data(*args, comparison=comparison)
+            return self.get_data(*args, **params)
 
         data = starmap(get_data, request.query_params.lists())
         data = filter(None, data)
