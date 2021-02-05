@@ -16,29 +16,32 @@ class CognateViewSet(ViewSet):
     serializer_class = CognateSerializer
 
     def list(self, request):
+        comparison = request.query_params.get("comparison")
+
         def get_data(*args):
-            return self.get_data(*args)
+            return self.get_data(*args, comparison=comparison)
 
         data = starmap(get_data, request.query_params.lists())
         data = filter(None, data)
         data = reduce(lambda a, b: {**a, **b}, data, {})
         return Response({"results": data})
 
-    def get_data(self, lang, words):
-        try:
-            lang_code = iso639.Lang(lang).pt3
-        except InvalidLanguageValue:
-            return None
+    def get_data(self, lang, words, **params):
+        if lang != "*":
+            try:
+                lang = iso639.Lang(lang).pt3
+            except InvalidLanguageValue:
+                return None
 
         data = {}
         for word in words:
-            data[f"{lang_code}:{word}"] = self.get_cognates(lang_code, word)
+            data[f"{lang}:{word}"] = self.get_cognates(lang, word, **params)
 
         return data
 
-    def get_cognates(self, lang, word):
+    def get_cognates(self, lang, word, **params):
         cognates = []
-        for cognate in get_cognates(lang, word):
+        for cognate in get_cognates(lang, word, **params):
             serializer = self.serializer_class(
                 data={
                     "word": cognate["word"],
