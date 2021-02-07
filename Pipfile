@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
-drf-spectacular = "*"
 tox = "*"
 flake8 = "*"
 isort = "*"
@@ -15,6 +14,7 @@ black = "*"
 [packages]
 django = "*"
 djangorestframework = "*"
+drf-spectacular = "*"
 iso639-lang = "*"
 requests = "*"
 redis = "*"
