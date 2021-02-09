@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /words:
+    get:
+      operationId: words_list
+      description: Returns cognates for every word in the url query.
+      tags:
+      - words
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cognate'
+          description: ''
+components:
+  schemas:
+    Cognate:
+      type: object
+      properties:
+        word:
+          type: string
+          maxLength: 80
+        language:
+          type: string
+          maxLength: 60
+      required:
+      - language
+      - word
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Session

@@ -1,0 +1,16 @@
+version: "3.0"
+services:
+  db:
+    image: redis:latest
+    volumes:
+      - ./redis/dump.rdb:/data/dump.rdb
+  web:
+    build: .
+    container_name: cognosaurus
+    command: bash -c "
+      python manage.py migrate
+      && gunicorn cognosaurus.wsgi -b 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env

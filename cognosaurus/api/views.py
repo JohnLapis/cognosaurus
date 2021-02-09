@@ -1,3 +1,58 @@
-from django.shortcuts import render
+from functools import reduce
+from itertools import starmap
 
-# Create your views here.
+import iso639
+from iso639.exceptions import InvalidLanguageValue
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+
+from cognosaurus.api.models import get_cognates, is_word_valid
+from cognosaurus.api.serializers import CognateSerializer
+
+
+class CognateViewSet(ViewSet):
+    """Returns cognates for every word in the url query."""
+
+    serializer_class = CognateSerializer
+
+    def list(self, request):
+        params = {
+            "comparison": request.query_params.get("comparison"),
+        }
+
+        def get_data(*args):
+            return self.get_data(*args, **params)
+
+        data = starmap(get_data, request.query_params.lists())
+        data = filter(None, data)
+        data = reduce(lambda a, b: {**a, **b}, data, {})
+        return Response({"results": data})
+
+    def get_data(self, lang, words, **params):
+        if lang != "*":
+            try:
+                lang = iso639.Lang(lang).pt3
+            except InvalidLanguageValue:
+                return None
+
+        data = {}
+        for word in words:
+            data[f"{lang}:{word}"] = self.get_cognates(lang, word, **params)
+
+        return data
+
+    def get_cognates(self, lang, word, **params):
+        cognates = []
+        if not is_word_valid(word):
+            return None
+        for cognate in get_cognates(lang, word, **params):
+            serializer = self.serializer_class(
+                data={
+                    "word": cognate["word"],
+                    "language": iso639.Lang(cognate["lang"]).name,
+                }
+            )
+            assert serializer.is_valid()
+            cognates.append(serializer.data)
+
+        return cognates
