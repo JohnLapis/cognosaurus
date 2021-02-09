@@ -1,11 +1,89 @@
 * cognosaurus
 
-This project is an API that, given a word, returns cognates or similar words in as many languages as posssible.
+Rest API to get cognates and similar words in different languages, written with Django and Redis.
 
-* License
+I created this project because I'm very interested in the etymology of words and the its cognates. So I wrote an API to get this information easily.
 
-This work is licensed under a [Creative Commons Attribution 4.0 International License][cc-by].
+* Usage
+
+Example requests using the http protocol:
+#+begin_src javascript
+Request: GET /words?spa=no&comparison=equal
+Response:
+  {
+    "results": {
+      "spa:no": [{
+        "word": "no",
+        "language": "Papiamento",
+      }],
+    },
+  }
+Request: GET /words?*=banana
+Response:
+  {
+    "results": {
+      "*:no": [{
+        "word": "no",
+        "language": "Papiamento",
+      }, {
+        "word": "não",
+        "language": "Portuguese",
+      }, {
+        "word": "no",
+        "language": "Spanish",
+      }, {
+        "word": "ノー",
+        "language": "Japanese",
+      }, {
+        "word": "non",
+        "language": "Latin",
+      }],
+    },
+  }
+Request: GET /words?eng=banana&comparison=equal
+Response:
+  {
+    "results": {
+      "eng:banana": [{
+        "word": "banana",
+        "language": "Portuguese",
+      }, {
+        "word": "banana",
+        "language": "Welsh",
+      }, {
+        "word": "banana",
+        "language": "Tok Pisin",
+      }],
+    },
+  }
+Request: GET /words?fra=bataillon&por=entidade
+Response:
+  {
+    "results": {
+      "fra:bataillon": [{
+        "word": "bataillon",
+        "language": "German",
+      }, {
+        "word": "battaglione",
+        "language": "Italian",
+      }, {
+        "word": "pataljoona",
+        "language": "Finnish",
+      }],
+      "por:entidade": [{
+        "word": "entitas",
+        "language": "Latin",
+      }],
+    },
+  }
+#+end_src
+
+The schema can be seen in file:schema.yml and the documentation is available in the root of the API.
 
 * Acknowledgements
 
 Some of the data used in this project comes from the CogNet-v2.0 database. More information about the tool is available at https://github.com/kbatsuren/CogNets.
+
+* License
+
+This work is licensed under a [Creative Commons Attribution 4.0 International License][cc-by].
