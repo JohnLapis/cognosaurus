@@ -86,4 +86,4 @@ Some of the data used in this project comes from the CogNet-v2.0 database. More 
 
 * License
 
-This work is licensed under a [Creative Commons Attribution 4.0 International License][cc-by].
+This work is licensed under a Creative Commons Attribution 4.0 International License.
