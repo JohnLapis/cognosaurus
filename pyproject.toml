@@ -22,9 +22,10 @@ deps =
     iso639-lang
     redis
 commands = pytest {posargs}
-passenv = SECRET_KEY
+passenv =
+    SECRET_KEY
+    REDIS_HOST
+    REDIS_PORT
 setenv =
     DJANGO_SETTINGS_MODULE = cognosaurus.settings
-    REDIS_HOST = 0.0.0.0
-    REDIS_PORT = 3000
 """

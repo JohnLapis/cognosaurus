@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+REDIS_HOST=0.0.0.0
 REDIS_PORT=3000
 
 # dump.rdb is in redis/
