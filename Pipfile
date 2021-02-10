@@ -17,7 +17,6 @@ django = "*"
 djangorestframework = "*"
 drf-spectacular = "*"
 iso639-lang = "*"
-requests = "*"
 redis = "*"
 gunicorn = "*"
 
