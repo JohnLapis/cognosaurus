@@ -9,8 +9,8 @@ services:
     container_name: cognosaurus
     command: bash -c "
       python manage.py migrate
-      && gunicorn cognosaurus.wsgi -b 0.0.0.0:8000"
+      && gunicorn cognosaurus.wsgi -b ${HOST}:${PORT}"
     ports:
-      - "8000:8000"
+      - "${PORT}:${PORT}"
     env_file:
       - .env
