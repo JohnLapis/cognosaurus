@@ -16,6 +16,8 @@ deps = -rrequirements-dev.txt
 commands = pytest {posargs}
 passenv =
     SECRET_KEY
+    HOST
+    PORT
     REDIS_HOST
     REDIS_PORT
 setenv =
