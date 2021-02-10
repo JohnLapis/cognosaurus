@@ -12,17 +12,7 @@ envlist = py36, py37
 isolated_build = True
 
 [testenv]
-deps =
-    pytest
-    pytest-cov
-    pytest-django
-    hypothesis
-    requests
-    django
-    djangorestframework
-    drf-spectacular
-    iso639-lang
-    redis
+deps = -rrequirements-dev.txt
 commands = pytest {posargs}
 passenv =
     SECRET_KEY
