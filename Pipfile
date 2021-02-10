@@ -12,6 +12,7 @@ isort = "*"
 black = "*"
 pytest-django = "*"
 hypothesis = "*"
+requests = "*"
 
 [packages]
 django = "*"
