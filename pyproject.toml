@@ -16,6 +16,7 @@ deps =
     pytest
     pytest-cov
     pytest-django
+    hypothesis
     django
     djangorestframework
     drf-spectacular
