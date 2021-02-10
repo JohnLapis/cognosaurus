@@ -1,2 +1,30 @@
+[build-system]
+requires = [ "setuptools >= 35.0.2", "wheel >= 0.29.0"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length = 85
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py36, py37
+isolated_build = True
+
+[testenv]
+deps =
+    pytest
+    pytest-cov
+    pytest-django
+    django
+    djangorestframework
+    drf-spectacular
+    iso639-lang
+    redis
+commands = pytest {posargs}
+passenv = SECRET_KEY
+setenv =
+    DJANGO_SETTINGS_MODULE = cognosaurus.settings
+    REDIS_HOST = 0.0.0.0
+    REDIS_PORT = 3000
+"""
