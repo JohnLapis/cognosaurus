@@ -2,6 +2,22 @@ import pytest
 from rest_framework.test import APIClient
 
 
+def get_language(d):
+    return d["language"]
+
+
+def compare_results(results, expected_results):
+    assert set(results.keys()) == set(expected_results.keys())
+    for result in zip(results.values(), expected_results.values()):
+        cognates, expected_cognates = result
+        if isinstance(expected_cognates, list):
+            cognates = sorted(cognates, key=get_language)
+            expected_cognates = sorted(expected_cognates, key=get_language)
+            assert cognates == expected_cognates
+        else:
+            assert cognates == expected_cognates
+
+
 @pytest.fixture
 def client():
     yield APIClient()
@@ -124,4 +140,10 @@ def client():
 )
 def test_cognate_viewset(client, path, expected):
     response = client.get(path)
+
+    if "results" in expected:
+        compare_results(response.data["results"], expected["results"])
+        response.data["results"] = None
+        expected["results"] = None
+
     assert response.data == expected
