@@ -5,6 +5,11 @@ from django.conf import settings
 import redis
 
 DB = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+try:
+    assert DB.ping()
+except Exception as e:
+    if not settings.NO_DB:
+        raise e
 
 
 def is_valid_language(text):
