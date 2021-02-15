@@ -11,13 +11,13 @@ redis-server --port $REDIS_PORT --daemonize yes
 cd ..
 
 if [ -z ${PYTHON_VERSION+x} ]; then
-    envlist=ALL
+    envlist="py{$PYTHON_VERSIONS}"
 else
     envlist=$(echo $PYTHON_VERSION | sed -E 's/([0-9])\./py\1/')
 fi
 
 echo "Running tox"
-tox -e $envlist -- cognosaurus/api/tests/integration/ "$@"
+tox -e "$envlist-functional" -- cognosaurus/api/tests/integration/ "$@"
 
 echo "Terminating redis"
 redis-cli -p $REDIS_PORT shutdown nosave

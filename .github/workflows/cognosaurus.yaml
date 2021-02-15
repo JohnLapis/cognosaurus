@@ -12,6 +12,7 @@ env:
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   HOST: ${{ secrets.HOST }}
   PORT: ${{ secrets.PORT }}
+  PYTHON_VERSIONS: ${{ secrets.PYTHON_VERSIONS }}
 
 jobs:
   build:
