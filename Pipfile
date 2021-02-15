@@ -10,13 +10,15 @@ tox = "*"
 flake8 = "*"
 isort = "*"
 black = "*"
+pytest-django = "*"
+hypothesis = "*"
+requests = "*"
 
 [packages]
 django = "*"
 djangorestframework = "*"
 drf-spectacular = "*"
 iso639-lang = "*"
-requests = "*"
 redis = "*"
 gunicorn = "*"
 
