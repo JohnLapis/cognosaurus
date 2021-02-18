@@ -13,6 +13,8 @@ black = "*"
 pytest-django = "*"
 hypothesis = "*"
 requests = "*"
+profilehooks = "*"
+pytest-asyncio = "*"
 
 [packages]
 django = "*"
