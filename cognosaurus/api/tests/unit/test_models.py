@@ -60,7 +60,7 @@ def test_is_valid_word(text):
 )
 def test_get_cognates(args, kwargs, expected):
     generator = get_cognates(*args, **kwargs)
-    assert inspect.getframeinfo(generator.gi_frame).function == expected
+    assert inspect.getframeinfo(generator.ag_frame).function == expected
 
 
 def test_get_cognates_given_invalid_word():
@@ -82,7 +82,7 @@ def test_get_cognates_given_invalid_language():
 )
 def test_get_any_cognates(args, kwargs, expected):
     generator = get_any_cognates(*args, **kwargs)
-    assert inspect.getframeinfo(generator.gi_frame).function == expected
+    assert inspect.getframeinfo(generator.ag_frame).function == expected
 
 
 @pytest.mark.parametrize(
@@ -94,10 +94,11 @@ def test_get_any_cognates(args, kwargs, expected):
 )
 def test_get_equal_cognates(args, kwargs, expected):
     generator = get_equal_cognates(*args, **kwargs)
-    assert inspect.getframeinfo(generator.gi_frame).function == expected
+    assert inspect.getframeinfo(generator.ag_frame).function == expected
 
 
-def test_get_any_cognates_for_all_languages():
+@pytest.mark.asyncio
+async def test_get_any_cognates_for_all_languages():
     word = "bar"
 
     lang1 = "test:lang1"
@@ -110,14 +111,17 @@ def test_get_any_cognates_for_all_languages():
     inserted_cognates_lang2 = [cognate("foo", "foo"), cognate("zoo", "zoo")]
     db.rpush(key2, *inserted_cognates_lang2)
 
-    cognates = [json.dumps(c) for c in get_any_cognates_for_all_languages(word)]
+    cognates = [
+        json.dumps(c) async for c in get_any_cognates_for_all_languages(word)
+    ]
     db.delete(key1, key2)
 
     # repeated cognates are filtered out
     assert set(cognates) == set(inserted_cognates_lang1 + inserted_cognates_lang2)
 
 
-def test_get_any_cognates_for_one_language():
+@pytest.mark.asyncio
+async def test_get_any_cognates_for_one_language():
     lang, word = "test:lang", "bar"
     key = f"cognate:{lang}:{word}"
     inserted_cognates = [
@@ -126,13 +130,16 @@ def test_get_any_cognates_for_one_language():
     ]
     db.rpush(key, *inserted_cognates)
 
-    cognates = [json.dumps(c) for c in get_any_cognates_for_one_language(lang, word)]
+    cognates = [
+        json.dumps(c) async for c in get_any_cognates_for_one_language(lang, word)
+    ]
     db.delete(key)
 
     assert cognates == inserted_cognates
 
 
-def test_get_equal_cognates_for_all_languages():
+@pytest.mark.asyncio
+async def test_get_equal_cognates_for_all_languages():
     word = "bar"
 
     lang1 = "test:lang1"
@@ -143,7 +150,9 @@ def test_get_equal_cognates_for_all_languages():
     key2 = f"cognate:{lang2}:{word}"
     db.rpush(key2, cognate("bar", "b"), cognate("bar", "z"), cognate("z", "z"))
 
-    cognates = [json.dumps(c) for c in get_equal_cognates_for_all_languages(word)]
+    cognates = [
+        json.dumps(c) async for c in get_equal_cognates_for_all_languages(word)
+    ]
     db.delete(key1, key2)
 
     # repeated cognates are filtered out
@@ -154,7 +163,8 @@ def test_get_equal_cognates_for_all_languages():
     assert cognates == expected_cognates
 
 
-def test_get_equal_cognates_for_one_language():
+@pytest.mark.asyncio
+async def test_get_equal_cognates_for_one_language():
     lang, word = "test:lang", "bar"
     key = f"cognate:{lang}:{word}"
     inserted_cognates = [
@@ -164,8 +174,9 @@ def test_get_equal_cognates_for_one_language():
     db.rpush(key, *inserted_cognates)
 
     cognates = [
-        json.dumps(c) for c in get_equal_cognates_for_one_language(lang, word)
+        json.dumps(c) async for c in get_equal_cognates_for_one_language(lang, word)
     ]
+
     db.delete(key)
 
     assert cognates == [cognate("bar", "b")]

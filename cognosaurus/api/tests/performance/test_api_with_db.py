@@ -1,4 +1,6 @@
 import cProfile
+import inspect
+import os
 
 import pytest
 from rest_framework.test import APIRequestFactory
@@ -11,25 +13,9 @@ def rf():
     yield APIRequestFactory()
 
 
-def _test_cognate_viewset_in_loop(rf):
-    paths = [
-        "/words?por=deus",
-        "/",
-        "/words",
-        "/words?*=no",
-        "/words?eng=banana&comparison=equal",
-        "/words?fra=bataillon&por=entidade",
-        "/words?fra=ba*&por=entidade",
-        "/words?zzzzzzz=zzzz&por=entidade",
-    ]
+def test_cognate_viewset_in_loop():
     viewset = CognateViewSet.as_view({"get": "list"})
+    with open(os.path.dirname(__file__) + "/code_for_test.py", "r") as f:
+        code = f.read()
     print()
-    cProfile.runctx("for path in paths: viewset(rf.get(path))", globals(), locals())
-
-
-def test_cognate_viewset(rf):
-    path = "/words?*=no"
-    request = rf.get(path)
-    viewset = CognateViewSet.as_view({"get": "list"})
-    print()
-    cProfile.runctx("viewset(request)", globals(), locals())
+    cProfile.runctx(code, globals(), locals())
