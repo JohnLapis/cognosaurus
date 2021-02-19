@@ -1,15 +1,21 @@
+import asyncio
 import json
 
+import aioredis
 from django.conf import settings
 
-import redis
 
-DB = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
-try:
-    assert DB.ping()
-except Exception as e:
-    if not settings.NO_DB:
-        raise e
+async def get_db():
+    try:
+        db = await aioredis.create_redis(
+            f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}"
+        )
+
+        assert await db.ping()
+        return db
+    except Exception as e:
+        if not settings.NO_DB:
+            raise e
 
 
 def is_valid_language(text):
@@ -44,9 +50,10 @@ def get_equal_cognates(lang, word):
 
 
 async def get_any_cognates_for_all_languages(word):
+    db = await get_db()
     cognate_hashes = set()
-    for key in DB.keys(f"cognate:*:{word}"):
-        for cognate in DB.lrange(key, 0, -1):
+    for key in await db.keys(f"cognate:*:{word}"):
+        for cognate in await db.lrange(key, 0, -1):
             if hash(cognate) in cognate_hashes:
                 continue
             cognate_hashes.add(hash(cognate))
@@ -54,7 +61,8 @@ async def get_any_cognates_for_all_languages(word):
 
 
 async def get_any_cognates_for_one_language(lang, word):
-    for cognate in DB.lrange(f"cognate:{lang}:{word}", 0, -1):
+    db = await get_db()
+    for cognate in await db.lrange(f"cognate:{lang}:{word}", 0, -1):
         yield json.loads(cognate)
 
 

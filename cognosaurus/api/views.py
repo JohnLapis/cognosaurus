@@ -47,7 +47,6 @@ class CognateViewSet(ViewSet):
         cognates = []
         if not is_valid_word(word):
             return None
-        # IMP .8/ async is good
         async for cognate in get_cognates(lang, word, **params):
             serializer = self.serializer_class(
                 data={
