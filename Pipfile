@@ -24,6 +24,7 @@ iso639-lang = "*"
 redis = "*"
 gunicorn = "*"
 aioredis = "*"
+uvicorn = "*"
 
 [requires]
 python_version = "3.6"
