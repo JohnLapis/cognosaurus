@@ -1,0 +1,7 @@
+8102900 function calls (7934882 primitive calls) in 14.302 seconds
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     2400    0.300    0.000   12.269    0.005 views.py:49(get_cognates)
+     3000    0.023    0.000   12.322    0.004 views.py:34(get_data)
+     3000    0.008    0.000   12.330    0.004 views.py:24(_get_data)
+     2400    0.010    0.000   12.343    0.005 {built-in method _functools.reduce}
+     2400    0.028    0.000   12.618    0.005 views.py:19(list)
