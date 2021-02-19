@@ -9,7 +9,7 @@ services:
     container_name: cognosaurus
     command: bash -c "
       python manage.py migrate
-      && uvicorn --host ${HOST} --port ${PORT} cognosaurus.asgi:application"
+      && uvicorn --reload --host ${HOST} --port ${PORT} cognosaurus.asgi:application"
     ports:
       - "${PORT}:${PORT}"
     env_file:
