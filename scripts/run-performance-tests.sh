@@ -2,7 +2,7 @@
 
 
 no_db_test() {
-    tox -e "$envlist-performance" -- cognosaurus/api/tests/performance/test_api_without_db.py -s "$@"
+    tox -e "$envlist" -- cognosaurus/api/tests/performance/test_api_without_db.py -s "$@"
 }
 
 db_test() {
@@ -12,7 +12,7 @@ db_test() {
     redis-server --port $REDIS_PORT --daemonize yes
     cd ..
 
-    tox -e $envlist -- cognosaurus/api/tests/performance/test_api_with_db.py -s "$@"
+    tox -e "$envlist" -- cognosaurus/api/tests/performance/test_api_with_db.py -s "$@"
 
     echo "Terminating redis"
     redis-cli -p $REDIS_PORT shutdown nosave

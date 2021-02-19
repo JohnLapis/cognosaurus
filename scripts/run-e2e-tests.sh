@@ -11,7 +11,7 @@ else
 fi
 
 echo "Running tox"
-tox -e "$envlist-functional" -- cognosaurus/api/tests/e2e "$@"
+tox -e "$envlist" -- cognosaurus/api/tests/e2e "$@"
 
 echo "Terminating containers"
 docker-compose down

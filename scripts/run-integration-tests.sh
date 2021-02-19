@@ -17,7 +17,7 @@ else
 fi
 
 echo "Running tox"
-tox -e "$envlist-functional" -- cognosaurus/api/tests/integration/ "$@"
+tox -e "$envlist" -- cognosaurus/api/tests/integration/ "$@"
 
 echo "Terminating redis"
 redis-cli -p $REDIS_PORT shutdown nosave
