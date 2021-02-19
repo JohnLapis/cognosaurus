@@ -1,4 +1,5 @@
-from functools import reduce
+import asyncio
+from functools import partial, reduce
 from itertools import starmap
 
 import iso639
@@ -16,16 +17,16 @@ class CognateViewSet(ViewSet):
 
     serializer_class = CognateSerializer
 
-    def list(self, request):
+    @async_to_sync
+    async def list(self, request):
         params = {
             "comparison": request.query_params.get("comparison"),
         }
 
-        @async_to_sync
-        async def _get_data(*args):
-            return await self.get_data(*args, **params)
-
-        data = starmap(_get_data, request.query_params.lists())
+        data = starmap(
+            partial(self.get_data, **params), request.query_params.lists()
+        )
+        data = await asyncio.gather(*data)
         data = filter(None, data)
         data = reduce(lambda a, b: {**a, **b}, data, {})
         return Response({"results": data})
