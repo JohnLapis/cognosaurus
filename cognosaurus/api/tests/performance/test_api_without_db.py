@@ -5,8 +5,6 @@ import os
 import pytest
 from django.conf import settings
 
-# from utils import viewset_performance_test
-
 settings.NO_DB = True
 
 
