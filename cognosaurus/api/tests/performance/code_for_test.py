@@ -1,4 +1,3 @@
-rf = APIRequestFactory()
 viewset = CognateViewSet.as_view({"get": "list"})
 paths = [
     "/words?por=deus",
