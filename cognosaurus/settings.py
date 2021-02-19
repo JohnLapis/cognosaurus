@@ -56,7 +56,7 @@ DATABASES = {
 REDIS_HOST = os.environ["REDIS_HOST"]
 REDIS_PORT = os.environ["REDIS_PORT"]
 
-NO_DB = os.environ.get("NO_DB") or False
+NO_DB = os.environ.get("NO_DB", False)
 
 LANGUAGE_CODE = "en-us"
 
