@@ -25,13 +25,9 @@ async def mockGetCognates(*args, **kwargs):
 view_module_globals[get_cognates.__name__] = mockGetCognates
 
 
-@pytest.fixture(scope="module")
-def rf():
-    yield APIRequestFactory()
-
-
 def test_cognate_viewset_in_loop():
-    with open(os.path.dirname(__file__) + "/code_for_test.py", "r") as f:
+    rf = APIRequestFactory()
+    with open(os.path.dirname(__file__) + "/code_for_test_big_request.py", "r") as f:
         code = f.read()
     print()
     cProfile.runctx(code, globals(), locals())
