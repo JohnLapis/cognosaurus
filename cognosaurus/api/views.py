@@ -1,7 +1,9 @@
-from functools import reduce
+import asyncio
+from functools import partial, reduce
 from itertools import starmap
 
 import iso639
+from asgiref.sync import async_to_sync
 from iso639.exceptions import InvalidLanguageValue
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -15,20 +17,21 @@ class CognateViewSet(ViewSet):
 
     serializer_class = CognateSerializer
 
-    def list(self, request):
+    @async_to_sync
+    async def list(self, request):
         params = {
             "comparison": request.query_params.get("comparison"),
         }
 
-        def get_data(*args):
-            return self.get_data(*args, **params)
-
-        data = starmap(get_data, request.query_params.lists())
+        data = starmap(
+            partial(self.get_data, **params), request.query_params.lists()
+        )
+        data = await asyncio.gather(*data)
         data = filter(None, data)
         data = reduce(lambda a, b: {**a, **b}, data, {})
         return Response({"results": data})
 
-    def get_data(self, lang, words, **params):
+    async def get_data(self, lang, words, **params):
         if lang != "*":
             try:
                 lang = iso639.Lang(lang).pt3
@@ -37,15 +40,15 @@ class CognateViewSet(ViewSet):
 
         data = {}
         for word in words:
-            data[f"{lang}:{word}"] = self.get_cognates(lang, word, **params)
+            data[f"{lang}:{word}"] = await self.get_cognates(lang, word, **params)
 
         return data
 
-    def get_cognates(self, lang, word, **params):
+    async def get_cognates(self, lang, word, **params):
         cognates = []
         if not is_valid_word(word):
             return None
-        for cognate in get_cognates(lang, word, **params):
+        async for cognate in get_cognates(lang, word, **params):
             serializer = self.serializer_class(
                 data={
                     "word": cognate["word"],

@@ -13,6 +13,8 @@ black = "*"
 pytest-django = "*"
 hypothesis = "*"
 requests = "*"
+profilehooks = "*"
+pytest-asyncio = "*"
 
 [packages]
 django = "*"
@@ -21,6 +23,11 @@ drf-spectacular = "*"
 iso639-lang = "*"
 redis = "*"
 gunicorn = "*"
+aioredis = "*"
+uvicorn = "*"
 
 [requires]
 python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

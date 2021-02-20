@@ -1,6 +1,7 @@
-import pytest, os
-import requests
+import os
 
+import pytest
+import requests
 
 HOST = os.environ["HOST"]
 PORT = os.environ["PORT"]
@@ -20,7 +21,6 @@ def compare_results(results, expected_results):
             assert cognates == expected_cognates
         else:
             assert cognates == expected_cognates
-
 
 
 @pytest.mark.parametrize(

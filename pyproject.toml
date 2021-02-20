@@ -8,12 +8,13 @@ line-length = 85
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py36, py37
+envlist = py{36,37}
 isolated_build = True
 
 [testenv]
 deps = -rrequirements-dev.txt
-commands = pytest {posargs}
+commands =
+    pytest {posargs}
 passenv =
     SECRET_KEY
     HOST
