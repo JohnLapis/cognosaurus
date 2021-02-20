@@ -1,6 +1,6 @@
 * cognosaurus
 
-Rest API to get cognates and similar words in different languages, written with Django and Redis.
+Rest API to get cognates and similar words in different languages, written with Django Rest Framework and Redis using Python asynchronous API.
 
 I created this project because I'm very interested in the etymology of words and the its cognates. So I wrote an API to get this information easily.
 
